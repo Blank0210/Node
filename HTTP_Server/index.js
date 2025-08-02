@@ -1,4 +1,6 @@
+// This is required in order to start a http server
 const http = require("http");
+// This is required to have read/write access to files
 const fs = require('fs');
 
 // Create an HTTP server
