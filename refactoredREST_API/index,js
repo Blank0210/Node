@@ -1,0 +1,39 @@
+// Import required modules
+const express = require('express');
+const { connectToDatabase } = require("./connection.js");
+const { logReqRes } = require("./middleware/index.js");
+const userRouter = require('./routes/user');
+
+const PORT = 8000;
+const app = express();
+
+// Connect to MongoDB database
+connectToDatabase('mongodb://localhost:27017/mydatabase')
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => {
+        console.error('Failed to connect to MongoDB', err);
+    });
+
+// Middleware to parse URL-encoded bodies (form data)
+app.use(express.urlencoded({ extended: false }));
+
+// Custom middleware to log requests and responses to logs.txt
+app.use(logReqRes('logs.txt'));
+
+// Mount user-related routes at /api/users
+app.use('/api/users', userRouter);
+
+// Example middleware 1 (for demonstration)
+app.use((req, res, next) => {
+    console.log("Hello from middleware1");
+    next(); 
+});
+
+// Example middleware 2 (for demonstration)
+app.use((req, res, next) => {
+    console.log("Hello from middleware2");
+    next(); 
+});
+
+// Start the server
+app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
