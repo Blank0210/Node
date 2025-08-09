@@ -1,35 +1,23 @@
-const shortid  = require("shortid");
-const URL = require("../models/url");
+const mongoose = require("mongoose");
 
-async function createShortUrl(req, res) {
-    const body = req.body;
+const urlSchema = new mongoose.Schema({
+    shortId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    redirectUrl: {
+        type: String,
+        required: true
+    },
+    visitHistory: [ { 
+        timestamp: {
+            type: Number
+        }
+    } ],
+},
+    { timestamps: true }  // Automatically manage createdAt and updatedAt fields
+);
 
-    if(!body.url){
-        res.status(400)
-        .json({
-            error: "URL is required"
-        })
-    }
-
-    const shortId = nanoid(8);
-    await URL.create( {
-        shortId: shortID,
-        redirectUrl: body.url,
-        visitHistrory: [],
-    });
-
-    return res.render("home",{ 
-        id: shortID 
-    });
-}
-
-async function getAnalytics(req, res) {
-    const shortId = req.params.shortId;
-    const result = await URL.findOne({ shortId })
-    return res.json({ totalClicks: result.visitHistrory.length, 
-                      analytics: result.visitHistrory });
-}
-module.exports = {
-    createShortUrl,
-    getAnalytics
-}
+const URL = mongoose.model("URL", urlSchema);
+module.exports = URL;
