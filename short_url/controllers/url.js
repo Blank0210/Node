@@ -18,7 +18,9 @@ async function createShortUrl(req, res) {
         visitHistrory: [],
     });
 
-    return res.json({ id: shortID })
+    return res.render("home",{ 
+        id: shortID 
+    });
 }
 
 async function getAnalytics(req, res) {
